@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  app:
+    build: .  # Строит образ из Dockerfile в текущей директории
+    ports:
+      - "8080:8080"  # Порт для приложения
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/my_database
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Master5145
+    depends_on:
+      - postgres
+    command: ["./wait-for-it.sh", "postgres:5432", "--timeout=30", "java", "-jar", "/app/app.jar"]  # Укажите правильный путь к вашему приложению
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: "my_database"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "Master5145"
+    ports:
+      - "5433:5432"

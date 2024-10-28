@@ -1,0 +1,303 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Technology Management API",
+    "version": "1.0.0",
+    "description": "API для управления объектами Technology, включая добавление, обновление, архивирование и работу с характеристиками."
+  },
+  "paths": {
+    "/api/technologies": {
+      "post": {
+        "summary": "Обработка запроса по управлению технологиями",
+        "operationId": "handleTechnologyRequest",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TechnologyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешный ответ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Technology"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          },
+          "404": {
+            "description": "Технология не найдена"
+          }
+        }
+      }
+    },
+    "/api/technologies/active": {
+      "get": {
+        "summary": "Получение всех активных технологий",
+        "operationId": "getAllActiveTechnologies",
+        "responses": {
+          "200": {
+            "description": "Успешный ответ с активными технологиями",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Technology"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/technologies/add": {
+      "post": {
+        "summary": "Добавление новой технологии",
+        "operationId": "addTechnology",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Technology"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Технология успешно добавлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Technology"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/technologies/{id}": {
+      "put": {
+        "summary": "Обновление существующей технологии",
+        "operationId": "updateTechnology",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "ID обновляемой технологии"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Technology"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Технология успешно обновлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Technology"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Технология не найдена"
+          }
+        }
+      }
+    },
+    "/api/technologies/{id}/archive": {
+      "post": {
+        "summary": "Архивирование технологии",
+        "operationId": "archiveTechnology",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "ID архивируемой технологии"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Технология успешно архивирована"
+          },
+          "404": {
+            "description": "Технология не найдена"
+          }
+        }
+      }
+    },
+    "/api/technologies/{id}/unarchive": {
+      "post": {
+        "summary": "Разархивирование технологии",
+        "operationId": "unarchiveTechnology",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "ID разархивируемой технологии"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Технология успешно разархивирована"
+          },
+          "404": {
+            "description": "Технология не найдена"
+          }
+        }
+      }
+    },
+    "/api/technologies/{id}/characteristic": {
+      "post": {
+        "summary": "Добавление характеристики к технологии",
+        "operationId": "addCharacteristic",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "ID технологии, к которой добавляется характеристика"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Characteristic"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Характеристика успешно добавлена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Technology"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Технология не найдена"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TechnologyRequest": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Действие для выполнения (get, add, update, archive, unarchive, add-characteristic)"
+          },
+          "technology": {
+            "$ref": "#/components/schemas/Technology"
+          }
+        },
+        "required": [ "action" ]
+      },
+      "Technology": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор технологии"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название технологии"
+          },
+          "category": {
+            "type": "string",
+            "description": "Категория технологии"
+          },
+          "version": {
+            "type": "string",
+            "description": "Версия технологии"
+          },
+          "description": {
+            "type": "string",
+            "description": "Описание технологии"
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "Флаг, указывающий, заархивирована ли технология"
+          },
+          "characteristics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Characteristic"
+            },
+            "description": "Список характеристик технологии"
+          }
+        }
+      },
+      "Characteristic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Идентификатор характеристики"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название характеристики"
+          },
+          "value": {
+            "type": "string",
+            "description": "Значение характеристики"
+          }
+        }
+      }
+    }
+  }
+}
